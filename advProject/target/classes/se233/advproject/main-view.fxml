@@ -16,7 +16,7 @@
             <Label layoutX="452.0" layoutY="26.0" text="files list" />
             <ImageView fitHeight="131.0" fitWidth="131.0" layoutX="235.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@pngdrop.png" />
+                  <Image url="@asset/pngdrop.png" />
                </image>
             </ImageView>
          </children>

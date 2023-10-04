@@ -7,12 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
@@ -23,19 +23,23 @@ import se233.advproject.Launcher;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.*;
-
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
+import javafx.stage.DirectoryChooser;
 
 public class MainView implements Initializable {
+    // selection box
+    @FXML
+    private ChoiceBox outputSelectionBox;
     enum outPutFileType {
-        jpg,
-        png
+        jpg, png
     }
-    private outPutFileType outType = outPutFileType.jpg;
+    private outPutFileType outType = outPutFileType.png;
     // variables
     @FXML
     private ListView filesListView;
@@ -43,57 +47,49 @@ public class MainView implements Initializable {
     private ImageView PreviewImageView;
     @FXML
     private Label FileStatusLabel;
+    private File selectedDirectory;
     private Stage stage;
     private Scene scene;
     private Parent root;
-    //end var
-    private HashMap<String, String> fileMap = new HashMap<>();
     Data data = Data.getInstance();
-    /// inherited
-    // List view
-    // file dropping
-    ////
     // init data
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initListView();
     }
-    //
-    // list view handlers
+    // handling dragboards
     @FXML
     public void handleDragOver(DragEvent event){
         if (event.getDragboard().hasFiles()) {
             event.acceptTransferModes(TransferMode.COPY);
         }
     }
-    @FXML void handleDragDropped(DragEvent event) throws IOException {
+    @FXML
+    void handleDragDropped(DragEvent event) throws IOException {
         List<File> files = event.getDragboard().getFiles();
-        // files handling
-        boolean uploadSuccess = false;
-        int failCount = 0;
-        for (int i = 0; i < files.size(); i++) {
-            File f = files.get(i);
-            if (f.getName().contains("png") || (f.getName().contains("jpg"))) {
-                System.out.println(f.getName() + " is png/jpg, uploading");
-                filesListView.getItems().add(f.getName());
-                data.addFiles(f);
-                uploadSuccess = true;
-            } else if (f.getName().contains("zip")) {
-                System.out.println("handling" + f.getPath() + "...");
-                /// handle zip
+        // Use Stream to filter valid files
+        List<File> validFiles = files.stream()
+                .filter(file -> file.getName().endsWith(".png") || file.getName().endsWith(".jpg") || file.getName().endsWith(".zip"))
+                .collect(Collectors.toList());
+        // getting fail counts
+        int originalSize = files.size();
+        int validSize = validFiles.size();
+        int failCount = originalSize - validSize;
+        // handle zip files
+        for (File f : validFiles) {
+            if (f.getName().endsWith(".zip")) {
                 boolean zipHandlingSuccess = handleZipFile(f);
-                if (zipHandlingSuccess) {
-                    uploadSuccess = true;
-                } else {
+                if (!zipHandlingSuccess) {
                     failCount++;
                 }
             } else {
-                System.out.println(f.getName() + " is not png/jpg, excluding");
-                failCount++;
+                filesListView.getItems().add(f.getName());
+                data.addFiles(f);
             }
         }
-        if (uploadSuccess) data.setListView(filesListView);
-        // update label
+        if (validSize > 0) data.setListView(filesListView);
+
+        // Update label
         if (failCount == 0) {
             FileStatusLabel.setText("Files are all uploaded successfully !");
             FileStatusLabel.setTextFill(Color.GREEN);
@@ -143,7 +139,6 @@ public class MainView implements Initializable {
             return false; // Handling failed
         }
     }
-
     //
     @FXML
     public void handleClickPreview(MouseEvent event){
@@ -154,6 +149,8 @@ public class MainView implements Initializable {
                 Image img = new Image(new FileInputStream(data.getFiles().get(selectedIndex)));
                 PreviewImageView.setImage(img);
             }
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Invalid index selected: " + e.getMessage());
         } catch (Exception e){
             System.out.println(e);
         }
@@ -197,22 +194,36 @@ public class MainView implements Initializable {
             System.out.println(e);
         }
     }
-    @FXML
-    public void handleOutputSelectionBox(){
-        //
-    }
 
     /// method
+
+    public String getOutputFileType(){
+        if(outPutFileType.jpg == outType) return "jpg";
+        return "png";
+    }
     public void initListView(){
-        if (data.getListView() != null) {
-            try {
+        try {
+            if (data.getListView() != null) {
                 filesListView.getItems().setAll(data.getListView().getItems());
-                Image img = null;
-                img = new Image(new FileInputStream(data.getFiles().get(data.getListViewSelecting())));
+                Image img = new Image(new FileInputStream(data.getFiles().get(data.getListViewSelecting())));
                 PreviewImageView.setImage(img);
-            } catch (FileNotFoundException e) {
-                System.out.println(e);
             }
+        } catch (NullPointerException e) {
+            System.out.println("there is an UI component not being initialized : " + e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
         }
     }
+    public void initChoiceBox(){
+        // Populate the ChoiceBox
+        outputSelectionBox.getItems().addAll(outPutFileType.values());
+        outputSelectionBox.setValue(outType); // Default values
+        // listener for change detection
+        outputSelectionBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                outType = (outPutFileType) newVal;
+            }
+        });
+    }
+
 }

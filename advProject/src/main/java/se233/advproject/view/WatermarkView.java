@@ -2,29 +2,27 @@ package se233.advproject.view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.stage.DirectoryChooser;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
-import net.coobird.thumbnailator.resizers.Resizers;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.Base64;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class WatermarkView extends MainView {
     /// init
-    private static outPutFileType outType = outPutFileType.jpg;
     @FXML
     private TextField textContentTextfield;
     // sliders
@@ -54,11 +52,17 @@ public class WatermarkView extends MainView {
     @FXML
     private ToggleButton bottomleftPosPicker, bottomcentrePosPicker, bottomrightPosPicker;
     private Positions selectedPos = Positions.CENTER;
-
+    // selection box
+    @FXML
+    private ChoiceBox outputSelectionBox;
+    @FXML
+    private ChoiceBox fontSelectionBox;
     //
     @Override
     public void initialize(URL url, ResourceBundle resources) {
         initListView();
+        initChoiceBox();
+        // font box
         /// handle sliders
         rotationBox.textProperty().bind(rotationSlider.valueProperty().asString("%.2f"));
         sizeBox.textProperty().bind(sizeSlider.valueProperty().asString("%.2f"));
@@ -124,54 +128,77 @@ public class WatermarkView extends MainView {
 
     @FXML
     public void handleConfirmation() {
-        String textData = (textContentTextfield.getText().isBlank()) ? "null" : textContentTextfield.getText();
-        System.out.println(textData + " | is being used for watermarking");
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select Output Directory");
+        File selectedDirectory = directoryChooser.showDialog(sizeBox.getScene().getWindow());
 
-        BufferedImage watermark = stringToImage(textData,
-                new Font("Arial", Font.PLAIN, (int) sizeSlider.getValue()),
-                colorPicker.getValue(), new Color(0,0,0,0),
-                rotationSlider.getValue()
-        );
-
-        if (data.getFiles() != null) {
-            File outputDir = new File("target" + File.separator + "output");
-            if (!outputDir.exists()) {
-                outputDir.mkdirs();
-            }
-            ExecutorService executorService = Executors.newFixedThreadPool(4);
-            for (File file : data.getFiles()) { // iterate all files
-                executorService.submit(() -> {
-                    try {
-                        if (!file.exists() || !file.canRead()) {
-                            System.out.println("Cannot read file: " + file.getName());
-                            return;
+        if (selectedDirectory != null) {
+            String outputPath = selectedDirectory.getAbsolutePath();
+            String textData = (textContentTextfield.getText().isBlank()) ? "null" : textContentTextfield.getText();
+            System.out.println("text : " + textData + " ; is being used for watermarking");
+            // make watermark image
+            BufferedImage watermark = stringToImage(textData,
+                    new Font("Arial", Font.PLAIN, (int) sizeSlider.getValue()),
+                    colorPicker.getValue(), new Color(0, 0, 0, 0),
+                    rotationSlider.getValue()
+            );
+            // data work
+            if (data.getFiles() != null) {
+                File outputDir = new File(outputPath);
+                if (!outputDir.exists()) {
+                    outputDir.mkdirs();
+                }
+                int randomValue = (int) (Math.random() * 1000);
+                AtomicInteger step = new AtomicInteger(randomValue);
+                //working
+                int numThreads = 4;
+                ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+                for (int i = 0; i < numThreads; i++) {
+                    final int threadIndex = i;
+                    executorService.submit(() -> {
+                        for (int j = threadIndex; j < data.getFiles().size(); j += numThreads) {
+                            File file = data.getFiles().get(j);
+                            try {
+                                processFile(file, outputDir, watermark, step.getAndIncrement());
+                            } catch (IOException | IllegalArgumentException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        String thmbPath = outputDir + File.separator + "watermarked_" + file.getName();
-                        System.out.println("writing watermarked file to : " + thmbPath);
-                        javafx.scene.image.Image img = new Image(new FileInputStream(file));
-                        double scaleValue = imgqSlider.getValue();
-                        if (scaleValue <= 0) {
-                            System.out.println("Invalid scale value: " + scaleValue);
-                            return;
-                        }
-                        Thumbnails.of(file)
-                                .scale(1)
-                                .watermark(selectedPos, watermark, (float) opacitySlider.getValue()/100.f)
-                                .toFile(thmbPath);
-                        Thumbnails.of(thmbPath).scale(imgqSlider.getValue()).toFile(thmbPath);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
+                }
+                // done successfully
+                executorService.shutdown();
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setTitle("Done watermarks and exported");
+                a.setContentText("files are all Successfully exported into : " + outputPath);
+                a.show();
             }
-            executorService.shutdown();
         }
+    }
+    private void processFile(File file, File outputPath,
+BufferedImage watermark, int uniquifier) throws IOException, IllegalArgumentException {
+        if (!file.exists() || !file.canRead()) {
+            System.out.println("Cannot read file: " + file.getName());
+            return;
+        }
+        String thmbPath = outputPath + File.separator + "watermarked_" + getNoType(file) + uniquifier + "." + getOutputFileType();
+        File tempFile = new File(outputPath + File.separator + "temp_" + file.getName());
+        System.out.println("writing watermarked file to : " + thmbPath);
+        Thumbnails.of(file)
+                .scale(1)
+                .watermark(selectedPos, watermark, (float) opacitySlider.getValue()/100.f)
+                .outputFormat(getOutputFileType())
+                .toFile(tempFile); // Write watermark to the temp file
+
+        // Now scale the tempFile and save to thmbPath
+        Thumbnails.of(tempFile).scale(imgqSlider.getValue()*.01).toFile(thmbPath);
+
+        // Once done, delete the temp file.
+        Files.deleteIfExists(tempFile.toPath());
     }
 
     private static BufferedImage stringToImage(String text, Font font,
-                                               javafx.scene.paint.Color fxColor,
-                                               Color bgColor, double rotationAngle) {
+    javafx.scene.paint.Color fxColor,Color bgColor, double rotationAngle) {
         // Convert JavaFX Color to AWT Color
         Color awtColor = new Color((float) fxColor.getRed(),
                 (float) fxColor.getGreen(),
@@ -194,19 +221,28 @@ public class WatermarkView extends MainView {
         AffineTransform rotation = new AffineTransform();
         rotation.rotate(Math.toRadians(rotationAngle), width / 2.0, height / 2.0);  // Rotate around the center of the image
         g2d.setTransform(rotation);
-
-        // Check for negative or zero dimensions
-        if (width <= 0 || height <= 0) {
-            throw new IllegalArgumentException("Invalid dimensions for text image: width=" + width + ", height=" + height);
-        }
-
         // set font
         g2d.setFont(font);
         g2d.setColor(bgColor);
         g2d.fillRect(0, 0, width, height);
         g2d.setColor(awtColor);
         g2d.drawString(text, 0, fm.getAscent());
+
+        // Check for negative or zero dimensions
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Invalid dimensions for text image: width=" + width + ", height=" + height);
+        }
+
         g2d.dispose();
         return img;
+    }
+
+    private String getNoType(File file) {
+        String fileName = file.getName();
+        int lastDot = fileName.lastIndexOf('.');
+        if (lastDot == -1) {
+            return fileName;  // return the original filename if there's no dot
+        }
+        return fileName.substring(0, lastDot);
     }
 }

@@ -44,9 +44,9 @@
             <Slider fx:id="rotationSlider" blockIncrement="1.0" layoutX="84.0" layoutY="5.0" max="360.0" min="-359.0" showTickMarks="true" />
             <Label layoutX="29.0" layoutY="3.0" text="Rotation : " textAlignment="RIGHT" />
             <TextField fx:id="rotationBox" layoutX="224.0" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: white;" text="0" />
-            <Slider fx:id="sizeSlider" blockIncrement="1.0" layoutX="84.0" layoutY="37.0" showTickMarks="true" value="100.0" />
+            <Slider fx:id="sizeSlider" blockIncrement="1.0" layoutX="84.0" layoutY="37.0" max="50.0" showTickMarks="true" value="10.0" />
             <Label layoutX="52.0" layoutY="36.0" text="Size : " textAlignment="RIGHT" />
-            <TextField fx:id="sizeBox" layoutX="224.0" layoutY="32.0" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: white;" text="100" />
+            <TextField fx:id="sizeBox" layoutX="224.0" layoutY="32.0" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: white;" text="10" />
             <Slider fx:id="opacitySlider" blockIncrement="1.0" layoutX="84.0" layoutY="68.0" showTickMarks="true" value="100.0" />
             <TextField fx:id="opacityBox" layoutX="224.0" layoutY="63.0" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: white;" text="100" />
             <Slider fx:id="imgqSlider" blockIncrement="1.0" layoutX="84.0" layoutY="100.0" showTickMarks="true" value="100.0" />
@@ -56,7 +56,7 @@
          </children>
       </Pane>
       <Button layoutX="369.0" layoutY="359.0" mnemonicParsing="false" onAction="#handleConfirmation" prefHeight="26.0" prefWidth="218.0" text="Confirm" />
-      <ChoiceBox id="outputSelectionBox" layoutX="461.0" layoutY="325.0" prefHeight="26.0" prefWidth="128.0" />
+      <ChoiceBox id="outputSelectionBox" fx:id="outputSelectionBox" layoutX="461.0" layoutY="325.0" prefHeight="26.0" prefWidth="128.0" />
       <Label layoutX="368.0" layoutY="329.0" text="File output type : " textAlignment="RIGHT" />
       <Pane layoutX="361.0" prefHeight="146.0" prefWidth="247.0">
          <children>
@@ -65,7 +65,7 @@
                   <ListView fx:id="filesListView" layoutX="132.0" onMouseClicked="#handleClickPreview" prefHeight="162.0" prefWidth="116.0" />
                   <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="23.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@pngdrop.png" />
+                        <Image url="@asset/pngdrop.png" />
                      </image>
                   </ImageView>
                </children>
