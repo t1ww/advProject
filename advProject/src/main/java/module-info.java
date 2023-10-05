@@ -3,6 +3,7 @@ module se233.advproject {
     requires javafx.fxml;
     requires net.coobird.thumbnailator;
     requires java.desktop;
+    requires javafx.graphics;
 
 
     exports se233.advproject;
