@@ -1,5 +1,6 @@
 # advProject
 Javafx program that watermarks image and resize images (accept dragboards of png/jng/zip)
+!!! attention, ResizeView is broken due to HandleclickPreview being called in pctSlider please make sure to remove that before usage
 
 TO DO LISTS
   - font selection?
