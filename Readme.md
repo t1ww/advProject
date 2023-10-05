@@ -1,5 +1,6 @@
 # ADV PROJECT
   - finished 5/10/2023 //ddmmyy
+    - maybe i should add loading screen?
 # HOW TO USE
   - upload files in grey box with file icon 
     (files only accepts png/jpg/zip)
