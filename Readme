@@ -1,0 +1,12 @@
+# ADV PROJECT
+  - finished 5/10/2023 //ddmmyy
+# HOW TO USE
+  - upload files in grey box with file icon 
+    (files only accepts png/jpg/zip)
+  - choose to watermark/ resize
+  - customize as desired
+  - select output type (png/jpg)
+  - click confirm and select path
+# codes info
+  - multithread testing is in the watermark view,
+    uncomment // test = true // to start testing the speed different (ms)
