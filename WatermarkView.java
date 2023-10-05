@@ -101,6 +101,16 @@ public class WatermarkView extends MainView {
         bottomcentrePosPicker.setToggleGroup(toggleGroup);
         bottomrightPosPicker.setToggleGroup(toggleGroup);
 
+        // track change to preview
+        textContentTextfield.textProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        fontSelectionBox.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        toggleGroup.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
+            handleClickPreview(); // this one have a problem where it doesn't update instantaneously
+        }));
+        rotationSlider.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        sizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        opacitySlider.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        colorPicker.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
     }
 
     /// handle position
@@ -190,11 +200,12 @@ public class WatermarkView extends MainView {
         }
     }
     @FXML @Override
-    public void handleClickPreview(MouseEvent event){
+    public void handleClickPreview(){
         try {
             if(filesListView.getItems().size() > 0) {
                 int selectedIndex = filesListView.getSelectionModel().getSelectedIndex();
-                System.out.println("listview clicked selection at " + selectedIndex);
+                selectedIndex = (selectedIndex == -1)? 0 : selectedIndex;
+                System.out.println("listview selection at " + selectedIndex);
                 data.setListViewSelecting(selectedIndex);
                 String textData = (textContentTextfield.getText().isBlank()) ? "null" : textContentTextfield.getText();
                 BufferedImage watermark = stringToImage(textData,
