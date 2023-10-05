@@ -1,12 +1,19 @@
 package se233.advproject.view;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import net.coobird.thumbnailator.Thumbnails;
+import se233.advproject.Launcher;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResizeView extends MainView implements Initializable {
+    //
     enum resizeMode {
         pct, w, h,
     }
@@ -112,7 +120,7 @@ public class ResizeView extends MainView implements Initializable {
                                         System.out.println("writing resized file to : " + thmbPath);
                                         // write
                                         Thumbnails.of(file)
-                                                .scale(pctSlider.getValue() * .01)
+//                                                .scale(pctSlider.getValue() * .01)
                                                 .outputFormat(getOutputFileType())
                                                 .toFile(new File(thmbPath));
                                     } catch (IOException e) {

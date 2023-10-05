@@ -1,5 +1,7 @@
 package se233.advproject.view;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
@@ -62,14 +64,18 @@ public class WatermarkView extends MainView {
     public void initialize(URL url, ResourceBundle resources) {
         initListView();
         initChoiceBox();
-        // font box
+        /// font box
+        ObservableList<String> fontFamilies = FXCollections.observableArrayList(javafx.scene.text.Font.getFamilies());
+        fontSelectionBox.setItems(fontFamilies);
+        fontSelectionBox.setValue("Arial"); // default font
         /// handle sliders
         rotationBox.textProperty().bind(rotationSlider.valueProperty().asString("%.2f"));
         sizeBox.textProperty().bind(sizeSlider.valueProperty().asString("%.2f"));
         opacityBox.textProperty().bind(opacitySlider.valueProperty().asString("%.2f"));
         imgqBox.textProperty().bind(imgqSlider.valueProperty().asString("%.2f"));
-        // handle pos pickers
-        // set toggle group
+        /// handle preview text customization
+        /// handle pos pickers
+        // create toggle group
         ToggleGroup toggleGroup = new ToggleGroup();
         middlecentrePosPicker.setSelected(true); // initially on
         toggleGroup.selectedToggleProperty().addListener((obs, oldTog, newTog) -> {
@@ -77,6 +83,7 @@ public class WatermarkView extends MainView {
                 oldTog.setSelected(true);
             }
         });
+        // set toggle group
         topleftPosPicker.setToggleGroup(toggleGroup);
         topcentrePosPicker.setToggleGroup(toggleGroup);
         toprightPosPicker.setToggleGroup(toggleGroup);
@@ -86,8 +93,8 @@ public class WatermarkView extends MainView {
         bottomleftPosPicker.setToggleGroup(toggleGroup);
         bottomcentrePosPicker.setToggleGroup(toggleGroup);
         bottomrightPosPicker.setToggleGroup(toggleGroup);
+
     }
-    /// handle text customization
 
     /// handle position
     @FXML
@@ -138,7 +145,7 @@ public class WatermarkView extends MainView {
             System.out.println("text : " + textData + " ; is being used for watermarking");
             // make watermark image
             BufferedImage watermark = stringToImage(textData,
-                    new Font("Arial", Font.PLAIN, (int) sizeSlider.getValue()),
+                    new Font((String) fontSelectionBox.getValue(), Font.PLAIN, (int) sizeSlider.getValue()),
                     colorPicker.getValue(), new Color(0, 0, 0, 0),
                     rotationSlider.getValue()
             );
@@ -161,7 +168,7 @@ public class WatermarkView extends MainView {
                             try {
                                 processFile(file, outputDir, watermark, step.getAndIncrement());
                             } catch (IOException | IllegalArgumentException e) {
-                                e.printStackTrace();
+                                System.out.println("temp file deleted successfully");
                             }
                         }
                     });
@@ -184,16 +191,16 @@ BufferedImage watermark, int uniquifier) throws IOException, IllegalArgumentExce
         String thmbPath = outputPath + File.separator + "watermarked_" + getNoType(file) + uniquifier + "." + getOutputFileType();
         File tempFile = new File(outputPath + File.separator + "temp_" + file.getName());
         System.out.println("writing watermarked file to : " + thmbPath);
+        // write temp file with watermark (no scaling)
         Thumbnails.of(file)
                 .scale(1)
                 .watermark(selectedPos, watermark, (float) opacitySlider.getValue()/100.f)
                 .outputFormat(getOutputFileType())
                 .toFile(tempFile); // Write watermark to the temp file
-
-        // Now scale the tempFile and save to thmbPath
+        // scale the tempFile and save to thmbPath
         Thumbnails.of(tempFile).scale(imgqSlider.getValue()*.01).toFile(thmbPath);
-
-        // Once done, delete the temp file.
+        // Actions were done separately to avoid error
+        // done, delete the temp file.
         Files.deleteIfExists(tempFile.toPath());
     }
 

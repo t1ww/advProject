@@ -26,6 +26,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -185,13 +186,13 @@ public class MainView implements Initializable {
     @FXML
     public void handleBackButton(ActionEvent event){
         try { // back to main
-            root = FXMLLoader.load(Launcher.class.getResource("main-view.fxml"));
+            root = FXMLLoader.load(Objects.requireNonNull(Launcher.class.getResource("main-view.fxml")));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e){
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 

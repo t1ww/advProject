@@ -52,7 +52,7 @@
             <ToggleButton fx:id="heightModeToggle" layoutY="52.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="96.0" text="Height [ | ]" />
             <Pane fx:id="scaleSettingPane" layoutX="96.0" prefHeight="26.0" prefWidth="264.0">
                <children>
-                  <Slider fx:id="pctSlider" layoutX="8.0" layoutY="5.0" max="500.0" onMouseClicked="#handleClickPreview" showTickMarks="true" value="100.0" />
+                  <Slider fx:id="pctSlider" layoutX="8.0" layoutY="5.0" max="500.0" showTickMarks="true" value="100.0" />
                   <TextField fx:id="pctBox" layoutX="151.0" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white;" text="100" />
                   <Label layoutX="234.0" layoutY="2.0" text="Percent(%)" />
                </children>

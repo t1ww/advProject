@@ -15,14 +15,14 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advproject.view.WatermarkView">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advproject.view.WatermarkView">
    <children>
       <Pane id="fontPane" layoutX="14.0" layoutY="290.0">
          <children>
             <Label layoutX="9.0" layoutY="27.0" text="Text Content : " />
             <TextField fx:id="textContentTextfield" layoutX="87.0" layoutY="23.0" prefHeight="26.0" prefWidth="247.0" promptText="type here" />
             <Accordion layoutX="9.0" layoutY="60.0" />
-            <ChoiceBox id="fontSelectionBox" layoutX="11.0" layoutY="60.0" prefHeight="26.0" prefWidth="128.0" />
+            <ChoiceBox id="fontSelectionBox" fx:id="fontSelectionBox" layoutX="11.0" layoutY="60.0" prefHeight="26.0" prefWidth="128.0" />
             <ColorPicker fx:id="colorPicker" layoutX="160.0" layoutY="60.0" prefHeight="26.0" prefWidth="128.0" />
          </children>
       </Pane>

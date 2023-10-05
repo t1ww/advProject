@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advproject.view.MainView">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advproject.view.MainView">
    <children>
       <Pane layoutX="-1.0" onDragDropped="#handleDragDropped" onDragOver="#handleDragOver" prefHeight="200.0" prefWidth="601.0" style="-fx-background-color: lightgrey;">
          <children>
