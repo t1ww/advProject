@@ -24,7 +24,7 @@
                       ...
                   //  testing 1 thread for time different
                   Boolean test = false;
-                  //test = true; < - UNCOMMENT THIS ----------------------------------------------------------------------------------------
+                  //test = true; < - UNCOMMENT THIS ------------------------------------------------------------------------------
                   if (test) {...} // test close
 
 # end of readme file
