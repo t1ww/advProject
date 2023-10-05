@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advproject.view.ResizeView">
+   <children>
+      <Label layoutX="73.0" layoutY="1.0" text="Resize">
+         <font>
+            <Font name="Colonna MT" size="21.0" />
+         </font>
+      </Label>
+      <Pane layoutX="42.0" layoutY="35.0" prefHeight="129.0" prefWidth="218.0" style="-fx-background-color: lightgray;">
+         <children>
+            <ImageView fx:id="PreviewImageView" fitHeight="120.0" fitWidth="218.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true" />
+            <Label layoutX="88.0" text="Preview" />
+         </children>
+      </Pane>
+      <Button fx:id="ConfirmButton" layoutX="369.0" layoutY="359.0" mnemonicParsing="false" onAction="#handleConfirmation" prefHeight="26.0" prefWidth="218.0" text="Confirm" />
+      <ChoiceBox id="outputSelectionBox" fx:id="outputSelectionBox" layoutX="461.0" layoutY="325.0" prefHeight="26.0" prefWidth="128.0" />
+      <Label layoutX="368.0" layoutY="329.0" text="File output type : " textAlignment="RIGHT" />
+      <Pane layoutX="365.0" prefHeight="146.0" prefWidth="247.0">
+         <children>
+            <Pane id="FileDropPane" onDragDropped="#handleDragDropped" onDragOver="#handleDragOver" prefHeight="120.0" prefWidth="247.0" style="-fx-background-color: lightgray;">
+               <children>
+                  <ListView fx:id="filesListView" layoutX="132.0" onMouseClicked="#handleClickPreview" prefHeight="162.0" prefWidth="116.0" />
+                  <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="23.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@asset/pngdrop.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+            <Label fx:id="FileStatusLabel" layoutY="131.0" text="File Status : " />
+         </children>
+      </Pane>
+      <Button mnemonicParsing="false" onAction="#handleBackButton" prefHeight="26.0" prefWidth="57.0" text="Back" />
+      <Pane layoutX="41.0" layoutY="215.0">
+         <children>
+            <ToggleButton fx:id="percentageModeToggle" layoutY="1.0" mnemonicParsing="false" text="Percentage [%]" />
+            <ToggleButton fx:id="widthModeToggle" layoutY="26.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="96.0" text="Width [&lt;-&gt;]" />
+            <ToggleButton fx:id="heightModeToggle" layoutY="52.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="96.0" text="Height [ | ]" />
+            <Pane fx:id="scaleSettingPane" layoutX="96.0" prefHeight="26.0" prefWidth="264.0">
+               <children>
+                  <Slider fx:id="pctSlider" layoutX="8.0" layoutY="5.0" max="500.0" showTickMarks="true" value="100.0" />
+                  <TextField fx:id="pctBox" layoutX="151.0" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white;" text="100" />
+                  <Label layoutX="234.0" layoutY="2.0" text="Percent(%)" />
+               </children>
+            </Pane>
+            <Pane fx:id="heightSettingPane" layoutX="96.0" layoutY="52.0" prefHeight="26.0" prefWidth="274.0">
+               <children>
+                  <TextField fx:id="hTextField" layoutX="151.0" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white;" text="720" />
+                  <Label layoutX="233.0" layoutY="4.0" text="Pixels" />
+                  <Label layoutX="13.0" layoutY="5.0" text="Making width of images" />
+               </children>
+            </Pane>
+            <Pane fx:id="widthSettingPane" layoutX="96.0" layoutY="26.0" prefHeight="26.0" prefWidth="274.0">
+               <children>
+                  <TextField fx:id="wTextField" layoutX="151.0" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white;" text="1280" />
+                  <Label layoutX="234.0" layoutY="5.0" text="Pixels" />
+                  <Label layoutX="14.0" layoutY="6.0" text="Making width of images" />
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
