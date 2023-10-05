@@ -1,5 +1,5 @@
 # ADV PROJECT
-  - executable to use
+  - download the "executable" to use the application
   - finished 5/10/2023 //ddmmyy
     - maybe i should add loading screen?
 # HOW TO USE
