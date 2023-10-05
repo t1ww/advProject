@@ -2,6 +2,10 @@
   - download the "executable" to use the application
   - finished 5/10/2023 //ddmmyy
     - maybe i should add loading screen?
+# Team member (for submission)
+  652115001  Karanthaphong Areerak​
+  652115002  Krittayotch Kheunchan​
+  652115013  Narongchai Rongthong
 # HOW TO USE
   - upload files in grey box with file icon 
     (files only accepts png/jpg/zip)
