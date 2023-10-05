@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advproject.view.WatermarkView">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se233.advproject.view.WatermarkView">
    <children>
       <Pane id="fontPane" layoutX="14.0" layoutY="290.0">
          <children>
@@ -28,15 +28,15 @@
       </Pane>
       <Pane id="positionPane" layoutX="29.0" layoutY="189.0">
          <children>
-            <ToggleButton fx:id="topleftPosPicker" mnemonicParsing="false" onAction="#pickTopLeft" prefHeight="26.0" prefWidth="46.0" />
-            <ToggleButton fx:id="topcentrePosPicker" layoutX="65.0" mnemonicParsing="false" onAction="#pickTopCentre" prefHeight="26.0" prefWidth="46.0" text="^" />
-            <ToggleButton fx:id="toprightPosPicker" layoutX="130.0" mnemonicParsing="false" onAction="#pickTopRight" prefHeight="26.0" prefWidth="46.0" />
-            <ToggleButton fx:id="middleleftPosPicker" layoutY="39.0" mnemonicParsing="false" onAction="#pickMiddleLeft" prefHeight="26.0" prefWidth="46.0" text="&lt;" />
-            <ToggleButton fx:id="middlecentrePosPicker" layoutX="65.0" layoutY="39.0" mnemonicParsing="false" onAction="#pickMiddleCentre" prefHeight="26.0" prefWidth="46.0" text="o" />
-            <ToggleButton fx:id="middlerightPosPicker" layoutX="130.0" layoutY="39.0" mnemonicParsing="false" onAction="#pickMiddleRight" prefHeight="26.0" prefWidth="46.0" text="&gt;" />
-            <ToggleButton fx:id="bottomleftPosPicker" layoutY="80.0" mnemonicParsing="false" onAction="#pickBottomLeft" prefHeight="26.0" prefWidth="46.0" />
-            <ToggleButton fx:id="bottomcentrePosPicker" layoutX="65.0" layoutY="80.0" mnemonicParsing="false" onAction="#pickBottomCentre" prefHeight="26.0" prefWidth="46.0" text="v" />
-            <ToggleButton fx:id="bottomrightPosPicker" layoutX="130.0" layoutY="80.0" mnemonicParsing="false" onAction="#pickBottomRight" prefHeight="26.0" prefWidth="46.0" />
+            <ToggleButton fx:id="topleftPosPicker" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" />
+            <ToggleButton fx:id="topcentrePosPicker" layoutX="65.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" text="^" />
+            <ToggleButton fx:id="toprightPosPicker" layoutX="130.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" />
+            <ToggleButton fx:id="middleleftPosPicker" layoutY="39.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" text="&lt;" />
+            <ToggleButton fx:id="middlecentrePosPicker" layoutX="65.0" layoutY="39.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" text="o" />
+            <ToggleButton fx:id="middlerightPosPicker" layoutX="130.0" layoutY="39.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" text="&gt;" />
+            <ToggleButton fx:id="bottomleftPosPicker" layoutY="80.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" />
+            <ToggleButton fx:id="bottomcentrePosPicker" layoutX="65.0" layoutY="80.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" text="v" />
+            <ToggleButton fx:id="bottomrightPosPicker" layoutX="130.0" layoutY="80.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="46.0" />
          </children>
       </Pane>
       <Pane layoutX="262.0" layoutY="172.0">

@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -101,100 +102,72 @@ public class WatermarkView extends MainView {
         bottomcentrePosPicker.setToggleGroup(toggleGroup);
         bottomrightPosPicker.setToggleGroup(toggleGroup);
 
+        // track change to preview
+        textContentTextfield.textProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        fontSelectionBox.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        toggleGroup.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
+                  if (toggleGroup.getSelectedToggle().equals(topleftPosPicker)) {
+                pickTopLeft();
+            }else if (toggleGroup.getSelectedToggle().equals(topcentrePosPicker)) {
+                pickTopCentre();
+            }else if (toggleGroup.getSelectedToggle().equals(toprightPosPicker)) {
+                pickTopRight();
+            }else if (toggleGroup.getSelectedToggle().equals(middleleftPosPicker)) {
+                pickMiddleLeft();
+            }else if (toggleGroup.getSelectedToggle().equals(middlecentrePosPicker)) {
+                pickMiddleCentre();
+            }else if (toggleGroup.getSelectedToggle().equals(middlerightPosPicker)) {
+                pickMiddleRight();
+            }else if (toggleGroup.getSelectedToggle().equals(bottomleftPosPicker)) {
+                pickBottomLeft();
+            }else if (toggleGroup.getSelectedToggle().equals(bottomcentrePosPicker)) {
+                pickBottomCentre();
+            }else if (toggleGroup.getSelectedToggle().equals(bottomrightPosPicker)){
+                pickBottomRight();
+            }
+                handleClickPreview(); // this one have a problem where it doesn't update instantaneously
+        }));
+        rotationSlider.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        sizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        opacitySlider.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
+        colorPicker.valueProperty().addListener((observable, oldValue, newValue) -> { handleClickPreview(); });
     }
 
     /// handle position
-    @FXML
     public void pickTopLeft(){
         selectedPos = Positions.TOP_LEFT;
     }
-    @FXML
     public void pickTopCentre(){
         selectedPos = Positions.TOP_CENTER;
     }
-    @FXML
     public void pickTopRight(){
         selectedPos = Positions.TOP_RIGHT;
     }
-    @FXML
     public void pickMiddleLeft(){
         selectedPos = Positions.CENTER_LEFT;
     }
-    @FXML
     public void pickMiddleCentre(){
         selectedPos = Positions.CENTER;
     }
-    @FXML
     public void pickMiddleRight(){
         selectedPos = Positions.CENTER_RIGHT;
     }
-    @FXML
     public void pickBottomLeft(){
         selectedPos = Positions.BOTTOM_LEFT;
     }
-    @FXML
     public void pickBottomCentre(){
         selectedPos = Positions.BOTTOM_CENTER;
     }
-    @FXML
     public void pickBottomRight(){ selectedPos = Positions.BOTTOM_RIGHT; }
     ///
 
-    @FXML
-    public void handleConfirmation() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select Output Directory");
-        File selectedDirectory = directoryChooser.showDialog(sizeBox.getScene().getWindow());
-
-        if (selectedDirectory != null) {
-            String outputPath = selectedDirectory.getAbsolutePath();
-            String textData = (textContentTextfield.getText().isBlank()) ? "null" : textContentTextfield.getText();
-            System.out.println("text : " + textData + " ; is being used for watermarking");
-            // make watermark image
-            BufferedImage watermark = stringToImage(textData,
-                    new Font((String) fontSelectionBox.getValue(), Font.PLAIN, (int) sizeSlider.getValue()),
-                    colorPicker.getValue(), new Color(0, 0, 0, 0),
-                    rotationSlider.getValue()
-            );
-            // data work
-            if (data.getFiles() != null) {
-                File outputDir = new File(outputPath);
-                if (!outputDir.exists()) {
-                    outputDir.mkdirs();
-                }
-                int randomValue = (int) (Math.random() * 1000);
-                AtomicInteger step = new AtomicInteger(randomValue);
-                //working
-                int numThreads = 4;
-                ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
-                for (int i = 0; i < numThreads; i++) {
-                    final int threadIndex = i;
-                    executorService.submit(() -> {
-                        for (int j = threadIndex; j < data.getFiles().size(); j += numThreads) {
-                            File file = data.getFiles().get(j);
-                            try {
-                                processFile(file, outputDir, watermark, step.getAndIncrement());
-                            } catch (IOException | IllegalArgumentException e) {
-                                System.out.println("temp file deleted successfully");
-                            }
-                        }
-                    });
-                }
-                // done successfully
-                executorService.shutdown();
-                Alert a = new Alert(Alert.AlertType.INFORMATION);
-                a.setTitle("Done watermarks and exported");
-                a.setContentText("files are all Successfully exported into : " + outputPath);
-                a.show();
-            }
-        }
-    }
     @FXML @Override
-    public void handleClickPreview(MouseEvent event){
+    public void handleClickPreview(){
         try {
             if(filesListView.getItems().size() > 0) {
                 int selectedIndex = filesListView.getSelectionModel().getSelectedIndex();
-                System.out.println("listview clicked selection at " + selectedIndex);
+                selectedIndex = (selectedIndex == -1)? 0 : selectedIndex;
+                System.out.println("listview selection at " + selectedIndex);
                 data.setListViewSelecting(selectedIndex);
                 String textData = (textContentTextfield.getText().isBlank()) ? "null" : textContentTextfield.getText();
                 BufferedImage watermark = stringToImage(textData,
@@ -219,6 +192,114 @@ public class WatermarkView extends MainView {
             System.out.println("Invalid index selected: " + e.getMessage());
         } catch (Exception e){
             System.out.println(e);
+        }
+    }
+    @FXML
+    public void handleConfirmation() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select Output Directory");
+        File selectedDirectory = directoryChooser.showDialog(sizeBox.getScene().getWindow());
+
+        if (selectedDirectory != null) {
+            String outputPath = selectedDirectory.getAbsolutePath();
+            String textData = (textContentTextfield.getText().isBlank()) ? "null" : textContentTextfield.getText();
+            System.out.println("text : " + textData + " ; is being used for watermarking");
+            // make watermark image
+            BufferedImage watermark = stringToImage(textData,
+                    new Font((String) fontSelectionBox.getValue(), Font.PLAIN, (int) sizeSlider.getValue()),
+                    colorPicker.getValue(), new Color(0, 0, 0, 0),
+                    rotationSlider.getValue()
+            );
+            // data work
+            if (data.getFiles() != null) {
+                File outputDir = new File(outputPath);
+                if (!outputDir.exists()) {
+                    outputDir.mkdirs();
+                }
+                int randomValue = (int) (Math.random() * 1000);
+                AtomicInteger step = new AtomicInteger(randomValue);
+////  threads open //// working
+                Long startTime,startTime2,endTime,endTime2;
+                startTime = System.currentTimeMillis();
+                System.out.println("starting 4 threads process at : " + startTime);
+                //
+                int numThreads = 4;
+                ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+                for (int i = 0; i < numThreads; i++) {
+                    final int threadIndex = i;
+                    int finalNumThreads1 = numThreads;
+                    executorService.submit(() -> {
+                        for (int j = threadIndex; j < data.getFiles().size(); j += finalNumThreads1) {
+                            File file = data.getFiles().get(j);
+                            try {
+                                processFile(file, outputDir, watermark, step.getAndIncrement());
+                            } catch (IOException | IllegalArgumentException e) {
+                                System.out.println("temp file deleted successfully");
+                            }
+                        }
+                    });
+                }
+                // done successfully
+                // closing
+                executorService.shutdown();
+                // wait for the process
+                try {
+                    executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // show elapsed time
+                endTime = System.currentTimeMillis();
+                long elapsedTime = endTime - startTime;
+                System.out.println("ElapsedTime with 4 threads : " + elapsedTime);
+//      //  testing 1 thread for time different
+                Boolean test = false;
+//                test = true;
+                if(test) {
+                    startTime2 = System.currentTimeMillis();
+                    System.out.println("starting 1 threads process at : " + startTime2);
+                    //
+                    numThreads = 1;
+                    ExecutorService executorService2 = Executors.newFixedThreadPool(numThreads);
+                    for (int i = 0; i < numThreads; i++) {
+                        final int threadIndex = i;
+                        int finalNumThreads = numThreads;
+                        executorService2.submit(() -> {
+                            for (int j = threadIndex; j < data.getFiles().size(); j += finalNumThreads) {
+                                File file = data.getFiles().get(j);
+                                try {
+                                    processFile(file, outputDir, watermark, step.getAndIncrement());
+                                } catch (IOException | IllegalArgumentException e) {
+                                    System.out.println("temp file deleted successfully");
+                                }
+                            }
+                        });
+                    }
+                    // done successfully
+                    // closing
+                    executorService2.shutdown();
+                    // wait for the process
+                    try {
+                        executorService2.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    endTime2 = System.currentTimeMillis();
+                    long elapsedTime2 = endTime2 - startTime2;
+                    System.out.println("Time different with 1 threads = " + elapsedTime2);
+                    // compare
+                    System.out.println("/-----------------------------------------------/");
+                    System.out.println("/------COMPARISON-------/");
+                    System.out.println("4 threads Time (milliseconds) ; " + elapsedTime);
+                    System.out.println("1 threads Time (milliseconds) ; " + elapsedTime2);
+                } // test Close
+//// threads close //
+                // show finished
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setTitle("Done watermarks and exported");
+                a.setContentText("files are all Successfully exported into : " + outputPath);
+                a.show();
+            }
         }
     }
     private void processFile(File file, File outputPath,

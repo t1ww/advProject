@@ -142,10 +142,12 @@ public class MainView implements Initializable {
     }
     //
     @FXML
-    public void handleClickPreview(MouseEvent event){
+    public void handleClickPreview(){
         try {
             if(filesListView.getItems().size() > 0) {
                 int selectedIndex = filesListView.getSelectionModel().getSelectedIndex();
+                selectedIndex = (selectedIndex == -1)? 0 : selectedIndex;
+                System.out.println("listview selection at " + selectedIndex);
                 data.setListViewSelecting(selectedIndex);
                 Image img = new Image(new FileInputStream(data.getFiles().get(selectedIndex)));
                 PreviewImageView.setImage(img);
