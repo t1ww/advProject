@@ -3,11 +3,10 @@ package se233.advproject.view;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
@@ -15,10 +14,11 @@ import net.coobird.thumbnailator.geometry.Positions;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -206,7 +206,7 @@ public class WatermarkView extends MainView {
             System.out.println("text : " + textData + " ; is being used for watermarking");
             // make watermark image
             BufferedImage watermark = stringToImage(textData,
-                    new Font((String) fontSelectionBox.getValue(), Font.PLAIN, (int) sizeSlider.getValue()),
+                    new Font((String) fontSelectionBox.getValue(), java.awt.Font.PLAIN, (int) sizeSlider.getValue()),
                     colorPicker.getValue(), new Color(0, 0, 0, 0),
                     rotationSlider.getValue()
             );
@@ -303,7 +303,8 @@ public class WatermarkView extends MainView {
         }
     }
     private void processFile(File file, File outputPath,
-BufferedImage watermark, int uniquifier) throws IOException, IllegalArgumentException {
+                    BufferedImage watermark, int uniquifier)
+                    throws IOException, IllegalArgumentException {
         if (!file.exists() || !file.canRead()) {
             System.out.println("Cannot read file: " + file.getName());
             return;

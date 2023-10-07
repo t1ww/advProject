@@ -1,19 +1,12 @@
 package se233.advproject.view;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 import net.coobird.thumbnailator.Thumbnails;
-import se233.advproject.Launcher;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -145,6 +138,7 @@ public class ResizeView extends MainView implements Initializable {
                                         } catch (FileNotFoundException e) {
                                             throw new RuntimeException(e);
                                         }
+                                        int ow = (int) img.getWidth();
                                         // calculation
                                         double ratio = Double.parseDouble(wTextField.getText()) / img.getWidth();
                                         int w_buffer = (int) (Double.parseDouble(wTextField.getText()));

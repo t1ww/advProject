@@ -13,7 +13,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -24,14 +23,12 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import javafx.stage.DirectoryChooser;
 
 public class MainView implements Initializable {
     // selection box
