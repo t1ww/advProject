@@ -113,7 +113,7 @@ public class ResizeView extends MainView implements Initializable {
                                         System.out.println("writing resized file to : " + thmbPath);
                                         // write
                                         Thumbnails.of(file)
-//                                                .scale(pctSlider.getValue() * .01)
+                                                .scale(pctSlider.getValue() * .01)
                                                 .outputFormat(getOutputFileType())
                                                 .toFile(new File(thmbPath));
                                     } catch (IOException e) {
@@ -196,6 +196,8 @@ public class ResizeView extends MainView implements Initializable {
                 a.setTitle("Done resize and exported");
                 a.setContentText("files are all Successfully exported into : " + outputPath);
                 a.show();
+                // console
+                System.out.println("Files are all Successfully exported into : " + outputPath);
             }
         }
     }
