@@ -176,13 +176,13 @@ public class WatermarkView extends MainView {
                         rotationSlider.getValue()
                 );
                 File PreviewImageFile = new File(
-                        "target" + File.separator + "temp" + File.separator + "temp_preview");
+                        "advProject" + File.separator + "target" + File.separator + "temp" + File.separator + "temp_preview");
                 Thumbnails.of(data.getFiles().get(selectedIndex))
                         .scale(1)
                         .watermark(selectedPos, watermark, (float) opacitySlider.getValue()/100.f)
                         .outputFormat("png")
                         .toFile(PreviewImageFile); // Write watermark to the temp file
-                Image img = new Image(new FileInputStream("target/temp/temp_preview.png"));
+                Image img = new Image(new FileInputStream("advProject/target/temp/temp_preview.png"));
                 PreviewImageView.setImage(img);
 
                 // done, delete the temp file.
